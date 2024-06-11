@@ -37,13 +37,18 @@ python client.py <command>
 1. **CheckLocalFile:** Проверка указанного файла на наличие сигнатуры. Сервер возвращает список смещений найденных сигнатур.
 
 **Пример:**
-```sh
+```batch
 python client.py {\"command1\":\"CheckLocalFile\",\"params\":{\"file_path\":\"server.py\",\"signature\":\"BUFFER\"}}
 ```
-
+```sh
+python client.py '{"command1":"CheckLocalFile","params":{"file_path":"server.py","signature":"BUFFER"}}'
+```
 2. **QuarantineLocalFile:** Перемещает указанный файл в карантин.
 
 **Пример:**
-```sh
+```batch
 python client.py {\"command1\":\"QuarantineLocalFile\",\"params\":{\"file_path\":\"testfile\"}}
+```
+```sh
+python client.py '{"command1":"QuarantineLocalFile","params":{"file_path":"testfile"}}'
 ```
