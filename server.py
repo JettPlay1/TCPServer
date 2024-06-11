@@ -7,8 +7,10 @@ import signal
 from concurrent.futures import ThreadPoolExecutor
 from config import settings
 
-# Размер буфера для принятия сообщения от клиента
-BUFFER_SIZE = 4096
+
+BUFFER_SIZE = 4096  # Размер буфера для принятия сообщения от клиента
+HOST = "0.0.0.0"    # Адрес сервера
+PORT = 9999         # Порт сервера
 
 # Каталог для карантина
 QUARANTINE_DIR = settings.QUARANTINE_DIR
@@ -88,11 +90,11 @@ def client_handler(client):
         client.close()
 
 
-def main(host, port, num_threads):
+def main(num_threads):
 
     # Создаём сокет для общения с клиентами
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((host, port))
+    server.bind((HOST, PORT))
     server.listen(5)
     
     # Устанавливаем таймаут, чтобы сокет не блокировался и мы могли передать SIGINT
@@ -115,7 +117,7 @@ def main(host, port, num_threads):
     # Регистрируем хэндлер
     signal.signal(signal.SIGINT, signal_handler)
     
-    print(f"Server started on {host}:{port}")
+    print(f"Server started on {HOST}:{PORT}")
     
     # Ждём подключений
     while not shutdown_flag.is_set():
@@ -135,8 +137,6 @@ if __name__ == "__main__":
         print("Usage: python server.py <number of threads>")
         sys.exit(1)
     
-    HOST = "0.0.0.0"                # Адрес сервера
-    PORT = 9999                     # Порт сервера
-    NUM_THREADS = int(sys.argv[1])  # Число потоков
-    main(HOST, PORT, NUM_THREADS)
+    num_threads = int(sys.argv[1])  # Число потоков
+    main(num_threads)
 
