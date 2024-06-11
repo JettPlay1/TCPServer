@@ -22,9 +22,9 @@ pip install -r requirements.txt
 ### Сервер:
 
 ```sh
-python server.py <number of threads>
+python server.py <number_of_threads>
 ```
-number of threads - число потоков в пуле.
+**number of threads** - число потоков в пуле.
 
 ### Клиент:
 
@@ -34,16 +34,16 @@ python client.py <command>
 
 ## Поддерживаемые команды
 
-1. CheckLocalFile: Проверка указанного файла на наличие сигнатуры. Сервер возвращает список смещений найденных сигнатур.
+1. **CheckLocalFile:** Проверка указанного файла на наличие сигнатуры. Сервер возвращает список смещений найденных сигнатур.
 
-Пример:
+**Пример:**
 ```sh
 python client.py {\"command1\":\"CheckLocalFile\",\"params\":{\"file_path\":\"server.py\",\"signature\":\"BUFFER\"}}
 ```
 
-2. QuarantineLocalFile: Перемещает указанный файл в карантин.
+2. **QuarantineLocalFile:** Перемещает указанный файл в карантин.
 
-Пример:
+**Пример:**
 ```sh
 python client.py {\"command1\":\"QuarantineLocalFile\",\"params\":{\"file_path\":\"testfile\"}}
 ```
