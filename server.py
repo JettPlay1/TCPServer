@@ -5,12 +5,13 @@ import os
 import sys
 import signal
 from concurrent.futures import ThreadPoolExecutor
+from config import settings
 
 
 BUFFER_SIZE = 4096
 
 # Каталог для карантина
-QUARANTINE_DIR = "quarantine"
+QUARANTINE_DIR = settings.QUARANTINE_DIR
 if not os.path.exists(QUARANTINE_DIR):
     os.makedirs(QUARANTINE_DIR)
 
@@ -80,7 +81,7 @@ def main(host, port, num_threads):
     pool = ThreadPoolExecutor(max_workers=num_threads)
     shutdown_flag = threading.Event()
     
-    def signal_handler(sig, frame):
+    def signal_handler(signal, frame):
         print('Shutting down server...')
         shutdown_flag.set()
         server.close()
@@ -105,6 +106,6 @@ def main(host, port, num_threads):
 if __name__ == "__main__":
     HOST = "0.0.0.0"
     PORT = 9999
-    NUM_THREADS = 4
+    NUM_THREADS = sys.argv[1]
     main(HOST, PORT, NUM_THREADS)
 
