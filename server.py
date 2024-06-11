@@ -67,7 +67,7 @@ def client_handler(client):
         
         # Парсим JSON
         request_data = json.loads(data.decode())
-        
+
         command = request_data.get("command1")
         params = request_data.get("params")
 
@@ -94,9 +94,10 @@ def main(host, port, num_threads):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((host, port))
     server.listen(5)
-    server.settimeout(1)  # Устанавливаем таймаут, чтобы сокет не блокировался и мы могли передать SIGINT
     
-
+    # Устанавливаем таймаут, чтобы сокет не блокировался и мы могли передать SIGINT
+    server.settimeout(1)  
+    
     # Создаём пул
     pool = ThreadPoolExecutor(max_workers=num_threads)
     shutdown_flag = threading.Event()
@@ -129,8 +130,13 @@ def main(host, port, num_threads):
 
 
 if __name__ == "__main__":
-    HOST = "0.0.0.0"  # Адрес сервера
-    PORT = 9999  # Порт сервера
+
+    if len(sys.argv) < 2:
+        print("Usage: python server.py <number of threads>")
+        sys.exit(1)
+    
+    HOST = "0.0.0.0"                # Адрес сервера
+    PORT = 9999                     # Порт сервера
     NUM_THREADS = int(sys.argv[1])  # Число потоков
     main(HOST, PORT, NUM_THREADS)
 
