@@ -9,8 +9,8 @@ from config import settings
 
 
 BUFFER_SIZE = 4096  # Размер буфера для принятия сообщения от клиента
-HOST = "0.0.0.0"    # Адрес сервера
-PORT = 9999         # Порт сервера
+HOST = settings.SERVER_HOST    # Адрес сервера
+PORT = settings.SERVER_PORT         # Порт сервера
 
 # Каталог для карантина
 QUARANTINE_DIR = settings.QUARANTINE_DIR

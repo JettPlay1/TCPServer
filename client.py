@@ -1,7 +1,7 @@
 import socket
 import json
 import sys
-
+from config import settings
 
 def send_request(command, server_host, server_port):
     request = json.dumps(command)
@@ -22,8 +22,8 @@ if __name__ == "__main__":
 
     # Парсим JSON 
     command = json.loads(sys.argv[1])
-    SERVER_HOST = "localhost"
-    SERVER_PORT = 9999
+    SERVER_HOST = settings.HOST
+    SERVER_PORT = settings.SERVER_PORT
     
     # Отправляем запрос и получаем ответ от сервера
     response = send_request(command, SERVER_HOST, SERVER_PORT)
