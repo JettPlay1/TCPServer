@@ -52,3 +52,14 @@ python client.py {\"command1\":\"QuarantineLocalFile\",\"params\":{\"file_path\"
 ```sh
 python client.py '{"command1":"QuarantineLocalFile","params":{"file_path":"testfile"}}'
 ```
+
+## Параметры сервера
+
+Для указания своей конфигурации сервера можете указать необходимые настройки в .env файле.
+
+### Поддерживаемые параметры
+
+* **QUARANTINE_DIR** - Путь до каталога карантина.
+* **HOST** - Адрес сервера, по которому клиент будет подключаться.
+* **SERVER_HOST** - Адрес, на котором будет запущен сервер.
+* **SERVER_PORT** - Порт, на котором будет запущен сервер.
