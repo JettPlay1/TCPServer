@@ -70,7 +70,7 @@ def client_handler(client):
         
         command = request_data.get("command1")
         params = request_data.get("params")
-        
+
         # Обрабатываем команду
         if command == "CheckLocalFile":
             response = check_local_file(params)
@@ -131,6 +131,6 @@ def main(host, port, num_threads):
 if __name__ == "__main__":
     HOST = "0.0.0.0"  # Адрес сервера
     PORT = 9999  # Порт сервера
-    NUM_THREADS = sys.argv[1]  # Число потоков
+    NUM_THREADS = int(sys.argv[1])  # Число потоков
     main(HOST, PORT, NUM_THREADS)
 
