@@ -7,7 +7,7 @@ import signal
 from concurrent.futures import ThreadPoolExecutor
 from config import settings
 
-
+# Размер буфера для принятия сообщения от клиента
 BUFFER_SIZE = 4096
 
 # Каталог для карантина
@@ -17,11 +17,16 @@ if not os.path.exists(QUARANTINE_DIR):
 
 
 def check_local_file(params):
+
+    # Парсим параметры
     file_path = params.get("file_path")
     signature = params.get("signature").encode()
+
+    # Проверяем, существует ли файл, переданный клиентом
     if not os.path.isfile(file_path):
         return {"status": "error", "message": "File not found"}
 
+    # Ищем сигнатуру пользователя в файле, записываем смещения найденных сигнатур
     offsets = []
     with open(file_path, "rb") as f:
         data = f.read()
@@ -34,17 +39,25 @@ def check_local_file(params):
 
 
 def quarantine_local_file(params):
+
+    # Парсим путь до файла
     file_path = params.get("file_path")
+
+    # Проверяем, существет ли файл
     if not os.path.isfile(file_path):
         return {"status": "error", "message": "File not found"}
 
+    # Перемещаем файл в карантин
     quarantine_path = os.path.join(QUARANTINE_DIR, os.path.basename(file_path))
     os.rename(file_path, quarantine_path)
+
     return {"status": "success", "message": f"File moved to {quarantine_path}"}
 
 
 def client_handler(client):
     try:
+
+        # Получаем команду с параметрами от клиента
         data = b''
         while True:
             part = client.recv(BUFFER_SIZE)
@@ -52,11 +65,13 @@ def client_handler(client):
             if len(part) < BUFFER_SIZE:
                 break
         
+        # Парсим JSON
         request_data = json.loads(data.decode())
         
         command = request_data.get("command1")
         params = request_data.get("params")
         
+        # Обрабатываем команду
         if command == "CheckLocalFile":
             response = check_local_file(params)
         elif command == "QuarantineLocalFile":
@@ -64,6 +79,7 @@ def client_handler(client):
         else:
             response = {"status": "error", "message": "Unknown command"}
         
+        # Отправляем ответ пользователю
         client.send(json.dumps(response).encode())
 
     except Exception as e:
@@ -73,25 +89,34 @@ def client_handler(client):
 
 
 def main(host, port, num_threads):
+
+    # Создаём сокет для общения с клиентами
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((host, port))
     server.listen(5)
-    server.settimeout(1)
+    server.settimeout(1)  # Устанавливаем таймаут, чтобы сокет не блокировался и мы могли передать SIGINT
     
+
+    # Создаём пул
     pool = ThreadPoolExecutor(max_workers=num_threads)
     shutdown_flag = threading.Event()
     
+    # Хэндлер для SIGINT
     def signal_handler(signal, frame):
         print('Shutting down server...')
+
+        # Закрываем сокет и пул и завершаем работу приложения
         shutdown_flag.set()
         server.close()
         pool.shutdown(wait=True)
         sys.exit(0)
     
+    # Регистрируем хэндлер
     signal.signal(signal.SIGINT, signal_handler)
     
     print(f"Server started on {host}:{port}")
     
+    # Ждём подключений
     while not shutdown_flag.is_set():
         try:
             client, addr = server.accept()
@@ -104,8 +129,8 @@ def main(host, port, num_threads):
 
 
 if __name__ == "__main__":
-    HOST = "0.0.0.0"
-    PORT = 9999
-    NUM_THREADS = sys.argv[1]
+    HOST = "0.0.0.0"  # Адрес сервера
+    PORT = 9999  # Порт сервера
+    NUM_THREADS = sys.argv[1]  # Число потоков
     main(HOST, PORT, NUM_THREADS)
 
